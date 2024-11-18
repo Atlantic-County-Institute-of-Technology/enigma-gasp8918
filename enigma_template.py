@@ -1,20 +1,94 @@
 # enigma.py
 # description: a simple rotational ciphertext program that can create
 # custom encoded messages, as well as encode and decode from file.
-# author: YOUR_NAME_HERE
-# created: MM.DD.YYYY
-# last update:  MM.DD.YYYY
+# author: roccowuzhurr
+# created: 11.18.2024
+# last update:  11.18.2024
 import random
-
-# we'll be using this string for the majority of our translations
-alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 # user inputs a message and selects a key (or random), the message is then translated using the cipher
 def encode_message():
-    pass
+    message = input("enter message: ")
+    loop = True
+    while loop:
+        try:
+            keyput = int(input("enter key: "))
+        except TypeError:
+            if keyput == "":
+                keyput = random.randint(0,26)
+            else:
+                print("don't do that")
+        else:
+            keyput = abs(keyput)
+            loop = False
+    key = (keyput%26)
+    message = message.lower()
+    code_message = ""
+    for x in range(len(message)):
+        if 122 > ord(message[x]) > 97:
+            if (ord(message[x]) + key) > 122:  # if the resulting letter is supposed to loop outside of the alphabet,
+                code_message += chr((((ord(message[x])+key)-122)%26)+97)
+                # take the number from the big letter, subtract the ascii out,
+                # then modulo it by 26 to get rid of the excess, then add 97 to start it from the beginning
+                # really weird
+            else:
+                code_message += chr(ord(message[x])+key)
+    print(f"{code_message}, key of {keyput}")
+    print("would you like to save this to a file?")
+    ans = input("y/n: ")
+    if ans.lower() == "y":
+        fname = input("name of file?")
+        fname = fname.strip().lower()
+        f = open(fname, 'w')
+        f.write(code_message)
+
 
 # encodes a target file, similarly to encode_message, except now targeting a filename
 def encode_file():
+    loop = True
+    while loop:
+        try:
+            read_file = input("enter filename: ")
+            f = open(read_file, "r")
+        except:
+            print("wow okay")
+            f.close()
+        else:
+            loop = False
+    loop = True
+    while loop:
+        try:
+            keyput = int(input("enter key: "))
+        except TypeError:
+            if keyput == "":
+                keyput = random.randint(0, 26)
+            else:
+                print("don't do that")
+        else:
+            keyput = abs(keyput)
+            loop = False
+    key = (keyput % 26)
+    message = ""
+    code_message = ""
+    for x in range(len(message)):
+        if 122 > ord(message[x]) > 97:
+            if (ord(message[x]) + key) > 122:  # if the resulting letter is supposed to loop outside of the alphabet,
+                code_message += chr((((ord(message[x]) + key) - 122) % 26) + 97)
+                # take the number from the big letter, subtract the ascii out,
+                # then modulo it by 26 to get rid of the excess, then add 97 to start it from the beginning
+                # really weird
+            else:
+                code_message += chr(ord(message[x]) + key)
+    print(f"{code_message}, key of {keyput}")
+    print("would you like to save this to a file?")
+    ans = input("y/n: ")
+    if ans.lower() == "y":
+        fname = input("name of file?")
+        fname = fname.strip().lower()
+        f = open(fname, 'w')
+        f.write(code_message)
+        f.close()
+
     pass
 
 # decodes target file using a user-specified key. If key is unknown, a keypress should
