@@ -2,7 +2,7 @@
 # description: a simple rotational ciphertext program that can create
 # custom encoded messages, as well as encode and decode from file.
 # author: roccowuzhurr
-# created: 11.18.2024
+# created: 11.19.2024
 # last update:  11.18.2024
 import random
 
@@ -39,20 +39,22 @@ def encode_message():
     if ans.lower() == "y":
         fname = input("name of file?")
         fname = fname.strip().lower()
-        f = open(fname, 'w')
+        f = open(f"{fname}.txt", 'w')
         f.write(code_message)
+        f.close()
 
 
 # encodes a target file, similarly to encode_message, except now targeting a filename
 def encode_file():
     loop = True
+    global f
     while loop:
         try:
             read_file = input("enter filename: ")
-            f = open(read_file, "r")
+            f = open(f"{read_file}.txt", "r")
+            f.read()
         except:
             print("wow okay")
-            f.close()
         else:
             loop = False
     loop = True
@@ -68,7 +70,7 @@ def encode_file():
             keyput = abs(keyput)
             loop = False
     key = (keyput % 26)
-    message = ""
+    message = f.read()
     code_message = ""
     for x in range(len(message)):
         if 122 > ord(message[x]) > 97:
@@ -80,15 +82,22 @@ def encode_file():
             else:
                 code_message += chr(ord(message[x]) + key)
     print(f"{code_message}, key of {keyput}")
-    print("would you like to save this to a file?")
+    print("would you like to save this to a new file?")
+    f.close()
     ans = input("y/n: ")
     if ans.lower() == "y":
         fname = input("name of file?")
         fname = fname.strip().lower()
-        f = open(fname, 'w')
-        f.write(code_message)
-        f.close()
-
+        f2 = open(f"{fname}.txt", 'w')
+        f2.write(code_message)
+        f2.close()
+    else:
+        print("would you like to overwrite current file?")
+        ans = input("y/n: ")
+        if ans.lower() == "y":
+            f = open(f"{read_file}.txt", "w")
+            f.write(code_message)
+            f.close()
     pass
 
 # decodes target file using a user-specified key. If key is unknown, a keypress should
