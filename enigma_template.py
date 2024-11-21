@@ -6,6 +6,9 @@
 # last update:  11.18.2024
 import random
 
+global f
+
+
 # user inputs a message and selects a key (or random), the message is then translated using the cipher
 def encode_message():
     message = input("enter message: ")
@@ -15,24 +18,24 @@ def encode_message():
             keyput = int(input("enter key: "))
         except TypeError:
             if keyput == "":
-                keyput = random.randint(0,26)
+                keyput = random.randint(0, 26)
             else:
                 print("don't do that")
         else:
             keyput = abs(keyput)
             loop = False
-    key = (keyput%26)
+    key = (keyput % 26)
     message = message.lower()
     code_message = ""
     for x in range(len(message)):
         if 122 > ord(message[x]) > 97:
             if (ord(message[x]) + key) > 122:  # if the resulting letter is supposed to loop outside of the alphabet,
-                code_message += chr((((ord(message[x])+key)-122)%26)+97)
+                code_message += chr((((ord(message[x]) + key) - 122) % 26) + 97)
                 # take the number from the big letter, subtract the ascii out,
                 # then modulo it by 26 to get rid of the excess, then add 97 to start it from the beginning
                 # really weird
             else:
-                code_message += chr(ord(message[x])+key)
+                code_message += chr(ord(message[x]) + key)
     print(f"{code_message}, key of {keyput}")
     print("would you like to save this to a file?")
     ans = input("y/n: ")
@@ -47,12 +50,11 @@ def encode_message():
 # encodes a target file, similarly to encode_message, except now targeting a filename
 def encode_file():
     loop = True
-    global f
     while loop:
         try:
             read_file = input("enter filename: ")
             f = open(f"{read_file}.txt", "r")
-            f.read()
+            message = (f.read())
         except:
             print("wow okay")
         else:
@@ -70,7 +72,6 @@ def encode_file():
             keyput = abs(keyput)
             loop = False
     key = (keyput % 26)
-    message = f.read()
     code_message = ""
     for x in range(len(message)):
         if 122 > ord(message[x]) > 97:
@@ -100,14 +101,16 @@ def encode_file():
             f.close()
     pass
 
+
 # decodes target file using a user-specified key. If key is unknown, a keypress should
 # call decode_unknown_key()
 def decode_file():
     pass
 
+
 # runs if the key is unknown. If this is true, print out all possible decoding combinations.
 def decode_unknown_key(filename):
-   pass
+    pass
 
 
 # main method declaration
@@ -133,6 +136,7 @@ def main():
             exit()
         else:
             print("Invalid choice. Please try again.")
+
 
 # runs on program start
 if __name__ == "__main__":
