@@ -99,19 +99,80 @@ def encode_file():
             f = open(f"{read_file}.txt", "w")
             f.write(code_message)
             f.close()
-    pass
-
 
 # decodes target file using a user-specified key. If key is unknown, a keypress should
 # call decode_unknown_key()
 def decode_file():
-    pass
+    loop = True
+    while loop:
+        try:
+            read_file = input("enter filename: ")
+            f = open(f"{read_file}.txt", "r")
+            message = (f.read())
+        except:
+            print("wow okay")
+        else:
+            loop = False
+    if input("do you know the key? y/n\n>") == "n":
+        f.close()
+        decode_unknown_key(read_file)
+    else:
+        loop = True
+        keyput = ""
+        while loop:
+            try:
+                keyput = int(input("enter key: "))
+            except TypeError:
+                if keyput == "":
+                    keyput = random.randint(0, 26)
+                else:
+                    print("don't do that")
+            else:
+                keyput = abs(keyput)
+                loop = False
+        key = (keyput % 26)
+        code_message = ""
+        for x in range(len(message)):
+            if 122 > ord(message[x]) > 97:
+                if (ord(message[x]) - key) < 97:  # same as encoding, just subtract,
+                    code_message += chr((((ord(message[x]) - key) - 122) % 26) + 97)
+
+                else:
+                    code_message += chr(ord(message[x]) - key)
+        print(f"{code_message}, key of {keyput}")
+        print("would you like to save this to a new file?")
+        f.close()
+        ans = input("y/n: ")
+        if ans.lower() == "y":
+            fname = input("name of file?")
+            fname = fname.strip().lower()
+            f2 = open(f"{fname}.txt", 'w')
+            f2.write(code_message)
+            f2.close()
+        else:
+            print("would you like to overwrite current file?")
+            ans = input("y/n: ")
+            if ans.lower() == "y":
+                f = open(f"{read_file}.txt", "w")
+                f.write(code_message)
+                f.close()
 
 
 # runs if the key is unknown. If this is true, print out all possible decoding combinations.
 def decode_unknown_key(filename):
-    pass
-
+    f = open(f"{filename}.txt", "r")
+    message = f.read()
+    f.close()
+    code_message = ""
+    for key in range(1, 26):
+        for x in range(len(message)):
+            if 122 > ord(message[x]) > 97:
+                if (ord(message[x]) - key) < 97: # same as normal decoding the key, just looped
+                    code_message += chr((((ord(message[x]) - key) - 122) % 26) + 97)
+                else:
+                    code_message += chr(ord(message[x]) - key)
+        print(f"{code_message}, key of {key}")
+        code_message = ""
 
 # main method declaration
 def main():
@@ -132,7 +193,7 @@ def main():
         elif selection == "3":
             decode_file()
         elif selection == "4":
-            print("Goodbye.")
+            print("Goodbye..........  . . . ")
             exit()
         else:
             print("Invalid choice. Please try again.")
